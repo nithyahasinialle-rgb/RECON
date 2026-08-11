@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RECON: Multi-Sensor 3D ToF Array & RF SLAM System</title>
+
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Three.js & OrbitControls -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <style>
+        :root {
+            --bg-dark: #0f1217;
+            --panel-bg: rgba(22, 27, 34, 0.92);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent-blue: #00d2ff;
+            --accent-cyan: #00f2fe;
+            --accent-green: #00e676;
+            --accent-orange: #ffb703;
+            --accent-red: #ff3366;
+            --text-main: #f0f6fc;
+            --text-sub: #8b949e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+        }
+
+        /* 3D Viewport Container */
+        #canvas-container {
+            flex: 1;
+            height: 100vh;
+            position: relative;
+        }
+
+        #webgl-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Top Overlay Header */
+        .header-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 10;
+        }
+
+        .badge-recon {
+            background: linear-gradient(135deg, #0052d4, #4364f7, #00f2fe);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
+        }
+
+        .title-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        /* Sidebar Control Panel (Right) */
+        .sidebar-panel {
+            width: 340px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(16px);
+            border-left: 1px solid var(--border-color);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            gap: 18px;
+            z-index: 20;
+            overflow-y: auto;
+        }
+
+        .panel-section {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .section-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-cyan);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            color: var(--text-sub);
+        }
+
+        .stat-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .status-sim {
+            color: var(--accent-orange);
+        }
+
+        /* Controls */
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .label-with-val {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-sub);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255,255,255,0.1);
+            outline: none;
+            accent-color: var(--accent-cyan);
+        }
+
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: var(--text-main);
+            cursor: pointer;
+        }
+
+        input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--accent-blue);
+            cursor: pointer;
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-clear {
+            background: rgba(255, 51, 102, 0.15);
+            color: var(--accent-red);
+            border: 1px solid rgba(255, 51, 102, 0.3);
+        }
+
+        .btn-clear:hover {
+            background: var(--accent-red);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 51, 102, 0.4);
+        }
+
+        .btn-auto {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+            color: #000;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        .btn-auto:hover {
+            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.4);
+            transform: translateY(-1px);
+        }
+
+        /* Bottom Status Floating Bar */
+        .bottom-bar {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            padding: 8px 20px;
+            display: flex;
+            gap: 20px;
+            font-size: 0.8rem;
+            z-index: 10;
+        }
+
+        .pill-stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 3D Canvas Viewport -->
+    <div id="canvas-container">
+        <div class="header-overlay">
+            <span class="badge-recon">RECON</span>
+            <span class="title-text">Multi-Sensor 3D ToF Array & RF SLAM System</span>
+        </div>
+
+        <div class="bottom-bar">
+            <div class="pill-stat"><i class="fa-solid fa-wifi" style="color:var(--accent-orange)"></i> <span>Wi-Fi RSSI: 3 AP Beacons (Simulated)</span></div>
+            <div class="pill-stat"><i class="fa-solid fa-compass" style="color:var(--accent-cyan)"></i> <span>IMU: BNO085 (Simulated)</span></div>
+            <div class="pill-stat"><i class="fa-solid fa-microchip" style="color:var(--accent-green)"></i> <span>Jetson Orin Nano: 20 FPS</span></div>
+        </div>
+
+        <canvas id="webgl-canvas"></canvas>
+    </div>
+
+    <!-- Right Sidebar Control Panel -->
+    <div class="sidebar-panel">
+
+        <!-- Sensor Info Section -->
+        <div class="panel-section">
+            <div class="section-title"><i class="fa-solid fa-satellite-dish"></i> Sensor Info</div>
+            <div class="stat-row">
+                <span>System Mode</span>
+                <span class="stat-val status-sim"><i class="fa-solid fa-circle" style="font-size:0.6rem"></i> SIMULATION MODE</span>
+            </div>
+            <div class="stat-row">
+                <span>4x ToF Channels</span>
+                <span class="stat-val">VL53L5CX (Simulated)</span>
+            </div>
+            <div class="stat-row">
+                <span>Range</span>
+                <span class="stat-val">0.03m - 2.00m</span>
+            </div>
+            <div class="stat-row">
+                <span>IMU Hardware</span>
+                <span class="stat-val status-sim">Pending ESP32 Link</span>
+            </div>
+        </div>
+
+        <!-- Display Settings -->
+        <div class="panel-section">
+            <div class="section-title"><i class="fa-solid fa-sliders"></i> Display Settings</div>
+            
+            <div class="control-group">
+                <div class="label-with-val">
+                    <span>Point Size</span>
+                    <span id="val-point-size">0.06m</span>
+                </div>
+                <input type="range" id="slider-point-size" min="0.02" max="0.15" step="0.01" value="0.06">
+            </div>
+
+            <div class="control-group" style="margin-top:10px">
+                <label class="checkbox-row">
+                    <input type="checkbox" id="chk-show-rays" checked>
+                    <span>Show 3D Zone Rays (144 Beams)</span>
+                </label>
+            </div>
+
+            <div class="control-group">
+                <label class="checkbox-row">
+                    <input type="checkbox" id="chk-show-red-dots" checked>
+                    <span>Show Red Obstacle Dots</span>
+                </label>
+            </div>
+
+            <div class="control-group">
+                <label class="checkbox-row">
+                    <input type="checkbox" id="chk-fit-plane" checked>
+                    <span>RANSAC Surface Plane Fitting</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Mapping Statistics -->
+        <div class="panel-section">
+            <div class="section-title"><i class="fa-solid fa-chart-line"></i> RECON SLAM Statistics</div>
+            <div class="stat-row">
+                <span>3D Mapped Points</span>
+                <span class="stat-val" id="stat-points-count" style="color:var(--accent-cyan)">2,048</span>
+            </div>
+            <div class="stat-row">
+                <span>Path Length</span>
+                <span class="stat-val" id="stat-path-len">14.8 m</span>
+            </div>
+            <div class="stat-row">
+                <span>Pose Estimate (X,Y)</span>
+                <span class="stat-val" id="stat-pose">(1.50, 1.50)</span>
+            </div>
+
+            <button class="btn-action btn-clear" id="btn-clear-map" style="margin-top:12px">
+                <i class="fa-solid fa-trash"></i> Clear 3D Map
+            </button>
+        </div>
+
+        <!-- Autonomous Drive Controller -->
+        <div class="panel-section">
+            <div class="section-title"><i class="fa-solid fa-robot"></i> RECON Autonomous Controller</div>
+            <button class="btn-action btn-auto" id="btn-run-ieee-benchmark">
+                <i class="fa-solid fa-play"></i> Run Autonomous Trial
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Web Dashboard Engine Script -->
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+# ROS 2 Build, Install, and Log Directories
+build/
+install/
+log/
+.colcon/
+
+# Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# System & Benchmark Log Files
+*.log
+*.csv
+.system_generated/
+.user_uploaded/
+scratch/
+
+# IDE / Editor Files
+.vscode/
+.idea/
+*.swp
+
+# OS Metadata
+.DS_Store
+Thumbs.db

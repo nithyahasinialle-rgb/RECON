@@ -1,0 +1,121 @@
+Panels:
+  - Class: rviz_common/Displays
+    Help Height: 78
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /Global Options1
+        - /Status1
+        - /RobotModel1
+        - /TF1
+      Splitter Ratio: 0.25
+  - Class: rviz_common/Views
+    Expanded:
+      - /Current View1
+    Name: Views
+    Splitter Ratio: 0.25
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 0.4
+      Cell Size: 1
+      Class: rviz_default_plugins/Grid
+      Color: 120; 120; 120
+      Enabled: true
+      Line Style:
+        Line Width: 0.02
+        Value: Lines
+      Name: Grid
+      Normal Cell Count: 0
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Plane: XY
+      Plane Cell Count: 20
+      Reference Frame: <Fixed Frame>
+      Value: true
+    - Class: rviz_default_plugins/TF
+      Enabled: true
+      Frame Timeout: 15
+      Marker Scale: 0.5
+      Name: TF
+      Show Arrows: false
+      Show Axes: true
+      Show Names: false
+      Value: true
+    - Class: rviz_default_plugins/Path
+      Color: 0; 255; 255
+      Enabled: true
+      Line Style:
+        Line Width: 0.06
+        Value: Lines
+      Name: Rover Mapping Trajectory
+      Topic:
+        Value: /rf_slam/trajectory
+      Value: true
+    - Class: rviz_default_plugins/MarkerArray
+      Enabled: true
+      Name: 3D ToF Cyan Ray Pyramid
+      Topic:
+        Value: /tof/ray_beams
+      Value: true
+    - Class: rviz_default_plugins/MarkerArray
+      Enabled: true
+      Name: ToF Live Red Hit Dots
+      Topic:
+        Value: /tof/red_hit_dots
+      Value: true
+    - Class: rviz_default_plugins/Marker
+      Enabled: true
+      Name: Single Red Hit Dots List
+      Topic:
+        Value: /tof/single_red_hit_dots
+      Value: true
+    - Class: rviz_default_plugins/PointCloud2
+      Color Transformer: AxisColor
+      Enabled: true
+      Name: 3D ToF Multi-Zone Point Cloud
+      Size (Pixels): 5
+      Size (m): 0.06
+      Style: Spheres
+      Topic:
+        Value: /tof/pointcloud
+      Value: true
+    - Class: rviz_default_plugins/MarkerArray
+      Enabled: true
+      Name: Accumulated SLAM Obstacle Map
+      Topic:
+        Value: /rf_slam/obstacles
+      Value: true
+    - Class: rviz_default_plugins/MarkerArray
+      Enabled: true
+      Name: Realistic 3D Office Furniture & Beacons
+      Topic:
+        Value: /rf_slam/map
+      Value: true
+  Enabled: true
+  Global Options:
+    Background Color: 25; 28; 32
+    Fixed Frame: odom
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz_default_plugins/Interact
+      Hide Inactive Objects: true
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+    - Class: rviz_default_plugins/FocusCamera
+  Value: true
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Distance: 9
+      Focal Point:
+        X: 5.0
+        Y: 5.0
+        Z: 0.2
+      Name: Current View
+      Pitch: 0.6
+      Value: Orbit (rviz)
+      Yaw: 0.75

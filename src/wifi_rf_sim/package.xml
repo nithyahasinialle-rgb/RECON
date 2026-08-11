@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>wifi_rf_sim</name>
+  <version>2.0.0</version>
+  <description>Wi-Fi RSSI Signal Strength Simulation Package for Jetson Orin Nano RF-SLAM Rover</description>
+  <maintainer email="student@research.edu">Research Team</maintainer>
+  <license>Apache-2.0</license>
+
+  <depend>rclpy</depend>
+  <depend>geometry_msgs</depend>
+  <depend>rf_msgs</depend>
+  <depend>tf2_ros</depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

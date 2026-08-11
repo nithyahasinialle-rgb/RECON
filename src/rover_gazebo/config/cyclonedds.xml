@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CycloneDDS xmlns="https://cdds.io/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://cdds.io/config https://raw.githubusercontent.com/eclipse-cyclonedds/cyclonedds/master/etc/cyclonedds.xsd">
+  <Domain id="42">
+    <General>
+      <NetworkInterfaceAddress>tailscale0</NetworkInterfaceAddress>
+      <AllowMulticast>false</AllowMulticast>
+    </General>
+    <Discovery>
+      <Peers>
+        <Peer Address="100.64.0.1"/> <!-- Replace with Laptop/Jetson Tailscale IP -->
+        <Peer Address="100.64.0.2"/>
+      </Peers>
+      <ParticipantIndex>auto</ParticipantIndex>
+    </Discovery>
+    <Internal>
+      <Watermarks>
+        <Whigh>512 kB</Whigh>
+      </Watermarks>
+    </Internal>
+  </Domain>
+</CycloneDDS>
