@@ -29,7 +29,7 @@ All sensor streams are fused inside a custom **C++ Extended Kalman Filter (EKF)*
 ### Step 1: Launch Master Simulation Engine (Terminal 1)
 
 ```bash
-cd ~/nithya/RECON
+cd ~/downloads/RECON
 
 # 1. Source ROS 2 Humble environment
 source /opt/ros/humble/setup.bash
@@ -49,7 +49,7 @@ ros2 launch rover_gazebo simulation.launch.py
 ### Step 2: Launch 3D Web Dashboard Server (Terminal 2)
 
 ```bash
-cd ~/nithya/RECON/web_dashboard
+cd ~/downloads/RECON/web_dashboard
 python3 -m http.server 8000
 ```
 
@@ -63,7 +63,7 @@ Now open your web browser on your laptop to:
 ### Step 3: Run Autonomous Evaluation Benchmark (Terminal 3)
 
 ```bash
-cd ~/nithya/RECON
+cd ~/downloads/RECON
 source /opt/ros/humble/setup.bash
 source install/setup.bash
 
@@ -78,7 +78,7 @@ python3 benchmarks/autonomous_coverage_benchmark.py 120
 ### Step 4: Manual Keyboard Teleoperation (Optional - Terminal 4)
 
 ```bash
-cd ~/nithya/RECON
+cd ~/downloads/RECON
 source /opt/ros/humble/setup.bash
 source install/setup.bash
 
